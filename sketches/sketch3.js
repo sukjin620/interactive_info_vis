@@ -67,10 +67,10 @@ registerSketch('sk3', function (p) {
     p.rect(20, 0, 140, 4, 2);
     p.pop();
 
-    // Center square
-    p.fill(220, 50, 50);
-    p.noStroke();
-    p.rect(0, 0, 20, 20, 4);
+    // Center 
+    p.textAlign(p.CENTER, p.CENTER);
+    p.textSize(36);
+    p.text('🚑', 0, 0);
 
   };
 });
