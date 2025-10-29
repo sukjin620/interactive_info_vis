@@ -50,6 +50,15 @@ registerSketch('sk3', function (p) {
         p.pop();
       }
     }
+
+    // Draw red cross background
+    p.push();
+    p.noStroke();
+    p.fill(255, 0, 0, 100);
+    p.rectMode(p.CENTER);
+    p.rect(0, 0, 200, 60);
+    p.rect(0, 0, 60, 200);
+    p.pop();
   
     // Hour hand (square shape)
     p.push();
@@ -79,5 +88,6 @@ registerSketch('sk3', function (p) {
     p.textAlign(p.CENTER, p.CENTER);
     p.textSize(36);
     p.text('🚑', 0, 0);
+
   };
 });  
