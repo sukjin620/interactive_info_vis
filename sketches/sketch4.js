@@ -8,10 +8,13 @@ registerSketch('sk4', function (p) {
   p.draw = function () {
     p.background(80, 126, 230);
     
-    let h = p.nf(p.hour(), 2);
+    let hr = p.hour();
     let m = p.nf(p.minute(), 2);
     let s = p.nf(p.second(), 2);
-    let timeString = h + ':' + m + ':' + s;
+    let ampm = hr >= 12 ? 'PM' : 'AM';
+    hr = hr % 12;
+    if (hr === 0) hr = 12;
+    let timeString = hr + ':' + m + ':' + s + ' ' + ampm;
     
     let ms = p.millis() % 1000;
     let pulse = p.map(ms, 0, 1000, 1.0, 1.15);
