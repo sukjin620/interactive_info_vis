@@ -7,6 +7,7 @@ registerSketch('sk2', function (p) {
   let scrollOffset = 0;
   let scrollSpeed = 2;
   let isMinutePulse = false;
+  let heartPaused = false;
 
   p.setup = function () {
     p.createCanvas(p.windowWidth, p.windowHeight);
@@ -63,7 +64,17 @@ registerSketch('sk2', function (p) {
     
     drawScrollingECG(ecgY);
     
-    drawHeartIcon(centerX, heartY, isBeating, beatProgress, isMinutePulse); // FIXED: Added isMinutePulse
+    drawHeartIcon(centerX, heartY, !heartPaused && isBeating, beatProgress, isMinutePulse);
+
+    p.textSize(16);
+    p.fill(60, 80, 100, 150);
+    let statusText = heartPaused ? "(Heart Paused)" : "(Heart Active)";
+    p.text("Click anywhere to trigger/stop the heartbeat " + statusText, centerX, p.height - 30);
+  };
+
+  p.mousePressed = function () {
+    heartPaused = !heartPaused;
+    return false; 
   };
 
   function getECGValue(progress, beating, minutePulse) {
@@ -143,7 +154,7 @@ registerSketch('sk2', function (p) {
     p.pop();
   }
 
-  function drawHeartIcon(x, y, beating, progress, minutePulse) { // FIXED: Added minutePulse parameter
+  function drawHeartIcon(x, y, beating, progress, minutePulse) { 
     p.push();
     p.translate(x, y);
     
