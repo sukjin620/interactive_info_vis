@@ -6,6 +6,7 @@ registerSketch('sk2', function (p) {
   let ecgPoints = [];
   let scrollOffset = 0;
   let scrollSpeed = 2;
+  let isMinutePulse = false;
 
   p.setup = function () {
     p.createCanvas(p.windowWidth, p.windowHeight);
@@ -27,6 +28,7 @@ registerSketch('sk2', function (p) {
       currentSecond = s;
       isBeating = true;
       beatProgress = 0;
+      isMinutePulse = (s === 0);
     }
     
     if (isBeating) {
@@ -42,7 +44,7 @@ registerSketch('sk2', function (p) {
       scrollOffset = 0;
       ecgPoints.shift();
       
-      let newY = getECGValue(beatProgress, isBeating);
+      let newY = getECGValue(beatProgress, isBeating, isMinutePulse); // FIXED: Added isMinutePulse
       ecgPoints.push(newY);
     }
     
@@ -61,17 +63,18 @@ registerSketch('sk2', function (p) {
     
     drawScrollingECG(ecgY);
     
-    drawHeartIcon(centerX, heartY, isBeating, beatProgress);
+    drawHeartIcon(centerX, heartY, isBeating, beatProgress, isMinutePulse); // FIXED: Added isMinutePulse
   };
 
-  function getECGValue(progress, beating) {
+  function getECGValue(progress, beating, minutePulse) {
     if (!beating || progress >= 1) {
       return 0; 
     }
     
+    let amplify = minutePulse ? 1.8 : 1;
     if (progress < 0.15) {
       let t = progress / 0.15;
-      return -p.sin(t * p.PI) * 12;
+      return -p.sin(t * p.PI) * 12 * amplify;
     }
     
     if (progress < 0.25) {
@@ -82,13 +85,13 @@ registerSketch('sk2', function (p) {
       let t = (progress - 0.25) / 0.15;
       
       if (t < 0.2) {
-        return t * 20;
+        return t * 20 * amplify;
       } else if (t < 0.5) {
         let spike = (t - 0.2) / 0.3;
-        return 4 - p.sin(spike * p.PI) * 70;
+        return 4 - p.sin(spike * p.PI) * 70 * amplify;
       } else {
         let dip = (t - 0.5) / 0.5;
-        return 4 + p.sin(dip * p.PI) * 25;
+        return 4 + p.sin(dip * p.PI) * 25 * amplify;
       }
     }
     
@@ -98,7 +101,7 @@ registerSketch('sk2', function (p) {
     
     if (progress < 0.7) {
       let t = (progress - 0.5) / 0.2;
-      return -p.sin(t * p.PI) * 20;
+      return -p.sin(t * p.PI) * 20 * amplify;
     }
     
     return 0; 
@@ -140,13 +143,14 @@ registerSketch('sk2', function (p) {
     p.pop();
   }
 
-  function drawHeartIcon(x, y, beating, progress) {
+  function drawHeartIcon(x, y, beating, progress, minutePulse) { // FIXED: Added minutePulse parameter
     p.push();
     p.translate(x, y);
     
     let scale = 1;
     if (beating && progress < 0.3) {
-      scale = 1 + p.sin(progress * p.PI * 3.33) * 0.15;
+      let pulseAmount = minutePulse ? 0.3 : 0.15;
+      scale = 1 + p.sin(progress * p.PI * 3.33) * pulseAmount;
     }
     p.scale(scale);
     
