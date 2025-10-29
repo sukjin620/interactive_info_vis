@@ -6,7 +6,7 @@ registerSketch('sk4', function (p) {
   };
   
   p.draw = function () {
-    p.background(200, 240, 200);
+    p.background(80, 126, 230);
     
     let h = p.nf(p.hour(), 2);
     let m = p.nf(p.minute(), 2);
